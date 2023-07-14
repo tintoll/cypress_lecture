@@ -17,4 +17,25 @@ describe("tasks management", () => {
     cy.get(".backdrop").should("not.exist");
     cy.get(".modal").should("not.exist");
   });
+
+  it("should create a new task", () => {
+    cy.visit("http://localhost:5173/");
+    cy.contains("Add Task").click();
+
+    // input에 값 넣기
+    cy.get("#title").type("New Task");
+    // textarea에 값 넣기
+    cy.get("#summary").type("Some description");
+
+    // 저장 버튼 클릭
+    cy.get(".modal").contains("Add Task").click();
+
+    cy.get(".backdrop").should("not.exist");
+    cy.get(".modal").should("not.exist");
+
+    // 생성됬는지 확인
+    cy.get(".task").should("have.length", 1);
+    cy.get(".task h2").contains("New Task");
+    cy.get(".task p").contains("Some description");
+  });
 });
