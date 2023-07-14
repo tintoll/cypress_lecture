@@ -44,6 +44,24 @@ describe("tasks management", () => {
     cy.contains("Add Task").click();
     cy.get(".modal").contains("Add Task").click();
 
-    cy.contains("Please provice values");
+    cy.contains("Please provide values");
+  });
+
+  it("should filter tasks", () => {
+    cy.visit("http://localhost:5173/");
+    cy.contains("Add Task").click();
+    cy.get("#title").type("New Task");
+    cy.get("#summary").type("Some description");
+    // select box 선택 (option의 value값으로 선택)
+    cy.get("#category").select("urgent");
+
+    cy.get(".modal").contains("Add Task").click();
+    // 앞에서 모달이 닫히는거는 이전에 테스트를 했기 때문에 따로 하지 않는다.
+    // 필터링에 필요한 검증 작업만 한다.
+    cy.get(".task").should("have.length", 1);
+    cy.get("#filter").select("moderate");
+    cy.get(".task").should("have.length", 0);
+    cy.get("#filter").select("urgent");
+    cy.get(".task").should("have.length", 1);
   });
 });
