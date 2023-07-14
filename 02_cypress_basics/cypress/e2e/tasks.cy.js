@@ -64,4 +64,24 @@ describe("tasks management", () => {
     cy.get("#filter").select("urgent");
     cy.get(".task").should("have.length", 1);
   });
+
+  it("should add multiple tasks", () => {
+    cy.visit("http://localhost:5173/");
+    cy.contains("Add Task").click();
+    cy.get("#title").type("Task 1");
+    cy.get("#summary").type("First task");
+    cy.get(".modal").contains("Add Task").click();
+    cy.get(".task").should("have.length", 1);
+
+    cy.contains("Add Task").click();
+    cy.get("#title").type("Task 2");
+    cy.get("#summary").type("Second task");
+    cy.get(".modal").contains("Add Task").click();
+    cy.get(".task").should("have.length", 2);
+
+    // first(), last(), eq(1)
+    // 첫벤째인덱스, 마지막 인덱스, 원하는 인덱스
+    cy.get(".task").eq(0).contains("First task"); //first()
+    cy.get(".task").eq(1).contains("Second task"); //last()
+  });
 });
