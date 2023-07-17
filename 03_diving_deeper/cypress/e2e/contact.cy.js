@@ -31,6 +31,7 @@ describe("contact form", () => {
 
     // const btn = cy.get('[data-cy="contact-btn-submit"]'); 변수에 get을 할 수는 있지만 실제 btn 객체가 담겨져 있지 않다.
 
+    // 스페셜키를 이용하여 enter 처리
     cy.get('[data-cy="contact-input-email"]').type("test@example.com{enter}");
 
     // as 메서드를 이용하여 alias를 주어 사용하는 것을 권장한다.
@@ -38,5 +39,15 @@ describe("contact form", () => {
     // cy.get("@submitBtn").click();
     cy.get("@submitBtn").contains("Sending...");
     cy.get("@submitBtn").should("have.attr", "disabled");
+  });
+
+  it("should validate the form input", () => {
+    cy.visit("http://localhost:5173/about");
+    cy.get('[data-cy="contact-btn-submit"]').click();
+    cy.get('[data-cy="contact-btn-submit"]').then((el) => {
+      expect(el).to.not.have.attr("disabled");
+      expect(el.text()).to.not.eq("Sending....");
+    });
+    cy.get('[data-cy="contact-btn-submit"]').contains("Send Message");
   });
 });
