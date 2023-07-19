@@ -4,8 +4,23 @@ describe(
   "contact form",
   { defaultCommandTimeout: 1000, browser: "firefox" },
   () => {
-    it("should submit the form ", () => {
+    before(() => {
+      // runs only once, before all tests
+    });
+    beforeEach(() => {
+      // runs before ever test
+      // 초기화 작업을 여기에서 해준다.
       cy.visit("/about");
+    });
+    afterEach(() => {
+      // runs after ever test
+      // 클린업 작업을해준다. 하지만 권장하지 않는다.
+    });
+    after(() => {
+      // runs only once, after all tests
+    });
+
+    it("should submit the form ", () => {
       cy.get('[data-cy="contact-input-message"]').type("Hello");
       cy.get('[data-cy="contact-input-name"]').type("joi");
       // cy.get('[data-cy="contact-input-email"]').type("test@example.com");
@@ -45,7 +60,6 @@ describe(
     });
 
     it("should validate the form input", () => {
-      cy.visit("/about");
       cy.get('[data-cy="contact-btn-submit"]').click();
       cy.get('[data-cy="contact-btn-submit"]').then((el) => {
         expect(el).to.not.have.attr("disabled");
