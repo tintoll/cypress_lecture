@@ -5,6 +5,12 @@ export default defineConfig({
     baseUrl: "http://localhost:5173",
     setupNodeEvents(on, config) {
       // implement node event listeners here
+      on("task", {
+        seedDatabase(filename) {
+          // 실행할 node 코드를 작성한다.
+          return filename;
+        },
+      });
     },
   },
 });

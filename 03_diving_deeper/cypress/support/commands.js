@@ -23,3 +23,15 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+
+Cypress.Commands.add("submitForm", () => {
+  cy.get('[data-cy="contact-btn-submit"]').click();
+});
+
+Cypress.Commands.addQuery("getById", (id) => {
+  // now함수는 커스컴쿼리에서만 사용해야 한다.
+  const getFn = cy.now("get", `[data-cy="${id}"]`);
+  return () => {
+    return getFn();
+  };
+});
