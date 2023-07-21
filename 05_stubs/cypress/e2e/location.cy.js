@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 
 describe("share location", () => {
-  it("should fetch the user location", () => {
+  beforeEach(() => {
     cy.visit("/").then((win) => {
       // then에서 작업 하는 이유는 window 객체에 접근하지 못할 수 있어서 직업 받을 수 있는 then에서 작업한다.
       // stub는 첫번째 인자롤 사용할 개체, 두번째 인자로 대체할 메서드명을 입력한다.
@@ -24,12 +24,25 @@ describe("share location", () => {
             });
           }, 100);
         });
+      // wirteText가 promise를 반환하기 때문에 resolves를 사용한다.
+      cy.stub(win.navigator.clipboard, "writeText")
+        .as("saveToClipboard")
+        .resolves();
     });
+  });
+  it("should fetch the user location", () => {
     cy.get('[data-cy="get-loc-btn"]').click();
     // alias는 요소를 주는것 말고 데이터도 가능하다
     cy.get("@getUserPosition").should("have.been.called");
 
     cy.get('[data-cy="get-loc-btn"]').should("be.disabled");
     cy.get('[data-cy="actions"]').should("contain", "Location fetched"); // contains랑 동일
+  });
+
+  it("should share a location URL", () => {
+    cy.get('[data-cy="name-input"]').type("John Doe");
+    cy.get('[data-cy="get-loc-btn"]').click();
+    cy.get('[data-cy="share-loc-btn"]').click();
+    cy.get("@saveToClipboard").should("have.been.called");
   });
 });
