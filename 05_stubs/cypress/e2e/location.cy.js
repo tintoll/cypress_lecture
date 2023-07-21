@@ -19,7 +19,7 @@ describe("share location", () => {
             cb({
               coords: {
                 latitude: 37.5,
-                longtitude: 48.01,
+                longitude: 48.01,
               },
             });
           }, 100);
@@ -44,5 +44,11 @@ describe("share location", () => {
     cy.get('[data-cy="get-loc-btn"]').click();
     cy.get('[data-cy="share-loc-btn"]').click();
     cy.get("@saveToClipboard").should("have.been.called");
+
+    // 올바른 값으로 전달되었는지 테스트
+    cy.get("@saveToClipboard").should(
+      "have.been.calledWithMatch",
+      new RegExp(`${37.5}.*${48.01}.*${encodeURI("John Doe")}`)
+    );
   });
 });
