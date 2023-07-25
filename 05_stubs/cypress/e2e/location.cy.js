@@ -27,6 +27,9 @@ describe("share location", () => {
       cy.stub(win.navigator.clipboard, "writeText")
         .as("saveToClipboard")
         .resolves();
+
+      cy.spy(win.localStorage, "setItem").as("storeLocation");
+      cy.spy(win.localStorage, "getItem").as("getStroedLocation");
     });
   });
   it("should fetch the user location", () => {
@@ -51,6 +54,16 @@ describe("share location", () => {
         "have.been.calledWithMatch",
         new RegExp(`${latitue}.*${longitude}.*${encodeURI("John Doe")}`)
       );
+
+      // 실제 값이 올바르게 호출되었는지
+      cy.get("@storeLocation").should(
+        "have.been.calledWithMatch",
+        /John Doe/,
+        new RegExp(`${latitue}.*${longitude}.*${encodeURI("John Doe")}`)
+      );
     });
+
+    // setItme이 호출되었는지 확인
+    cy.get("@storeLocation").should("have.been.called");
   });
 });
