@@ -2,6 +2,7 @@
 
 describe("share location", () => {
   beforeEach(() => {
+    cy.clock(); // 시계는 test 가동전에 시간을 조정하는게 좋다.
     cy.fixture("user-location.json").as("userLocation");
     cy.visit("/").then((win) => {
       // then에서 작업 하는 이유는 window 객체에 접근하지 못할 수 있어서 직업 받을 수 있는 then에서 작업한다.
@@ -65,5 +66,16 @@ describe("share location", () => {
 
     // setItme이 호출되었는지 확인
     cy.get("@storeLocation").should("have.been.called");
+    // getItem도 제대로 호출되었는지 확인. 실제 브라우저 API가 정상동작하는지까지는 테스트 안해도 됨.
+    cy.get('[data-cy="share-loc-btn"]').click();
+    cy.get("@getStoreLocation").should("have.been.called");
+
+    // 팝업이 호출되었는지 확인 2초 보이다 사라짐
+    cy.get('[data-cy="info-massage"]').should("be.visible");
+    cy.get('[data-cy="info-massage"]').should("have.class", "visible");
+
+    cy.tick(2000); // 2초를 앞당긴다.
+    // 팝업이 사라지는 테스트가 성공한다. 왜냐하면 cypress가 기본적으로 4초를 기다리기 때문메
+    cy.get('[data-cy="info-massage"]').should("not.be.visible");
   });
 });
