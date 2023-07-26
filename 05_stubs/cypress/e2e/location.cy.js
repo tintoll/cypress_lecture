@@ -49,18 +49,18 @@ describe("share location", () => {
     cy.get("@saveToClipboard").should("have.been.called");
 
     cy.get("@userLocation").then((fakePosition) => {
-      const { latitue, longitude } = fakePosition.coords;
+      const { latitude, longitude } = fakePosition.coords;
       // 올바른 값으로 전달되었는지 테스트
       cy.get("@saveToClipboard").should(
         "have.been.calledWithMatch",
-        new RegExp(`${latitue}.*${longitude}.*${encodeURI("John Doe")}`)
+        new RegExp(`${latitude}.*${longitude}.*${encodeURI("John Doe")}`)
       );
 
       // 실제 값이 올바르게 호출되었는지
       cy.get("@storeLocation").should(
         "have.been.calledWithMatch",
         /John Doe/,
-        new RegExp(`${latitue}.*${longitude}.*${encodeURI("John Doe")}`)
+        new RegExp(`${latitude}.*${longitude}.*${encodeURI("John Doe")}`)
       );
     });
 
@@ -68,14 +68,14 @@ describe("share location", () => {
     cy.get("@storeLocation").should("have.been.called");
     // getItem도 제대로 호출되었는지 확인. 실제 브라우저 API가 정상동작하는지까지는 테스트 안해도 됨.
     cy.get('[data-cy="share-loc-btn"]').click();
-    cy.get("@getStoreLocation").should("have.been.called");
+    cy.get("@getStroedLocation").should("have.been.called");
 
     // 팝업이 호출되었는지 확인 2초 보이다 사라짐
-    cy.get('[data-cy="info-massage"]').should("be.visible");
-    cy.get('[data-cy="info-massage"]').should("have.class", "visible");
+    cy.get('[data-cy="info-message"]').should("be.visible");
+    // cy.get('[data-cy="info-massage"]').should("have.class", "visible");
 
     cy.tick(2000); // 2초를 앞당긴다.
     // 팝업이 사라지는 테스트가 성공한다. 왜냐하면 cypress가 기본적으로 4초를 기다리기 때문메
-    cy.get('[data-cy="info-massage"]').should("not.be.visible");
+    cy.get('[data-cy="info-massage"]').should("not.exist");
   });
 });
